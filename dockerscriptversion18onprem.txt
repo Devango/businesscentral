@@ -1,0 +1,33 @@
+Docker -version
+
+uninstall-module NavContainerHelper -AllVersions -force
+uninstall-module BcContainerHelper -AllVersions -force
+
+Remove-Module NavContainerHelper -ErrorAction Ignore
+Remove-Module BcContainerHelper -ErrorAction Ignore
+
+Install-Module BcContainerHelper -Force
+Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser
+
+Get-BCArtifactUrl -type OnPrem -country ca -select Latest
+
+#docker pull mcr.microsoft.com/windows/servercore:10.0.19042.985
+#docker run --isolation process -it mcr.microsoft.com/windows/servercore:10.0.19042.985 cmd
+
+$bcartifactUrl = 'https://bcartifacts.azureedge.net/onprem/18.0.23013.23795/ca'
+$dockercontainerName = 'CA18OnPrem123'
+$licenseFile = 'C:\LIC\lastlicense.flf'
+$password = ConvertTo-SecureString -String "p@sswrong" -AsPlainText -Force
+$credential = New-Object  pscredential 'myadmin', $password
+New-BcContainer `
+    -accept_eula `
+    -licenseFile $licenseFile `
+    -auth UserPassword `
+    -containerName $dockercontainerName -artifactUrl $bcartifactUrl `
+    -Credential $credential `
+    -isolation Process `    `
+    -memoryLimit 4G `
+    -updatehosts
+
+
+
