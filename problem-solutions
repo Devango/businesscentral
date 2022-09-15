@@ -1,0 +1,3 @@
+400 bad request while calling bc extension apis.
+
+check permission set, give for d365basic, extension name permission set
